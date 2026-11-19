@@ -36,7 +36,7 @@ def _configure_logging(level: str) -> None:
     """루트 로거에 stdout 핸들러를 붙인다(핸들러가 없을 때만).
 
     uvicorn 의 기본 로깅 설정은 `uvicorn*` 로거만 구성하고 루트 로거는 건드리지
-    않는다. 그래서 이 함수 없이는 `app.*` 로거로 남긴 기록이 출력 대상을 못 찾아
+    않는다. 그래서 이 함수 없이는 `map_project_yolo.*` 로거로 남긴 기록이 출력 대상을 못 찾아
     전량 유실된다 — 어떤 연결이 무엇을 인식했고 무엇이 실패했는지가 보이지 않는다.
     경고 이상은 파이썬의 최후 수단 핸들러로 새어 나가지만 시각도 로거명도 없다.
 
@@ -73,7 +73,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """
     settings = get_settings()
     # 루트 로거를 가장 먼저 세운다. 아래 부팅 실패 사유와 모델 적재 기록이
-    # 전부 app.* 로거를 쓴다.
+    # 전부 map_project_yolo.* 로거를 쓴다.
     _configure_logging(settings.LOG_LEVEL)
     if not settings.GEMINI_API_KEY.get_secret_value():
         raise RuntimeError("GEMINI_API_KEY is required")
