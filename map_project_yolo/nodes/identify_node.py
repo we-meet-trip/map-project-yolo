@@ -41,7 +41,7 @@ _IDENTIFY_PROMPT = """\
 async def identify_node(state: GraphState) -> GraphState:
     """Gemini Vision 이 이미지를 직접 분석해 객체를 식별하는 LangGraph 노드.
 
-    YOLO detected_object 는 참고용 로그에만 사용하며, 핵심 식별은 Gemini Vision 이 담당.
+    YOLO detected_object 는 프롬프트에 참고용 힌트로 넣고 로그에도 남긴다. 최종 식별은 Gemini Vision 이 한다.
     location 은 선택값이며 없으면 프롬프트에서 생략한다.
     식별 실패 시 state.error 에 사유를 기록하고 반환.
     """
