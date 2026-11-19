@@ -1,4 +1,4 @@
-"""yolo-vision-agent FastAPI 엔트리포인트.
+"""map-project-yolo FastAPI 엔트리포인트.
 
 lifespan:
   - YoloDetector 를 생성해 app.state 에 주입.
@@ -104,8 +104,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(
-    title="yolo-vision-agent",
-    version="0.1.0",
+    title="map-project-yolo",
+    version="1.0.0",
     lifespan=lifespan,
 )
 

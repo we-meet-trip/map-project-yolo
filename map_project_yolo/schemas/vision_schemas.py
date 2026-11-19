@@ -1,4 +1,4 @@
-"""yolo-vision-agent 요청·응답·상태 Pydantic 스키마."""
+"""map-project-yolo 요청·응답·상태 Pydantic 스키마."""
 from __future__ import annotations
 
 from typing import List, Literal, Optional

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-# map-service-yolo — FastAPI + YOLO + Gemini Vision 실시간 인식 에이전트
+# map-project-yolo — FastAPI + YOLO + Gemini Vision 실시간 인식 서비스
 #
 # 멀티 스테이지 이미지 구성:
 #   1) builder stage : 컴파일 도구를 설치하고 requirements.txt 를 휠로 빌드해 /wheels 에 모은다.

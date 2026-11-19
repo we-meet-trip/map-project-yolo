@@ -1,4 +1,4 @@
-# yolo-vision-agent 런타임 의존성.
+# map-project-yolo 런타임 의존성.
 
 # fastapi
 #   - map_project_yolo/main.py FastAPI 인스턴스 및 라우터 정의.

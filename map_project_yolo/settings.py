@@ -1,4 +1,4 @@
-"""yolo-vision-agent 환경설정.
+"""map-project-yolo 환경설정.
 
 `VisionSettings(BaseSettings)` 는 환경 변수(또는 `.env`) 로부터 값을
 읽어 들이는 설정 객체이고, `get_settings()` 는 프로세스 1회 캐시되는
@@ -11,7 +11,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class VisionSettings(BaseSettings):
-    """yolo-vision-agent 의 모든 환경 변수 묶음.
+    """map-project-yolo 의 모든 환경 변수 묶음.
 
     model_config:
       - env_file=".env": 작업 디렉토리의 .env 파일 자동 로드.
