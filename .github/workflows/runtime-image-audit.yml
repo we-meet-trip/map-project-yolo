@@ -1,9 +1,10 @@
 name: runtime image audit
 
 on:
-  push:
+  pull_request:
     paths:
       - Dockerfile
+      - .dockerignore
       - requirements.txt
       - scripts/verify-headless-runtime.py
       - .github/workflows/runtime-image-audit.yml
@@ -33,7 +34,7 @@ jobs:
             test -z "$(find /usr/bin /usr/sbin -xdev -type f -perm /6000 -print -quit)"
             python -m pip check
           '
-      - name: Scan exact built image (findings remain release blockers)
+      - name: Scan the built image for HIGH and CRITICAL vulnerabilities
         run: |
           IMAGE_ID=$(docker image inspect --format '{{.Id}}' map-runtime:audit)
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD/reports:/reports" aquasec/trivy@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969 image --image-src docker --platform linux/amd64 --timeout 15m --no-progress --scanners vuln --severity HIGH,CRITICAL --format json --output /reports/trivy.json "$IMAGE_ID"
@@ -45,9 +46,9 @@ jobs:
           assert p['Metadata']['ImageID']==i['Id']
           vs=[v for r in p.get('Results',[]) for v in r.get('Vulnerabilities',[])]
           counts=dict(collections.Counter(v['Severity'] for v in vs))
-          summary={'source_sha':os.environ['GITHUB_SHA'],'image_id':i['Id'],'counts':counts,'security_status':'FINDINGS_REQUIRE_REVIEW' if vs else 'NO_HIGH_CRITICAL_IN_SCAN_SCOPE','registry_published':False}
+          summary={'source_sha':os.environ['GITHUB_SHA'],'image_id':i['Id'],'counts':counts,'security_status':'FINDINGS_REQUIRE_REVIEW' if vs else 'NO_HIGH_CRITICAL_IN_SCAN_SCOPE'}
           Path('reports/summary.json').write_text(json.dumps(summary,indent=2)+'\n')
-          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:f.write('Exact runtime vulnerability inventory (build success is not release approval)\n\n```json\n'+json.dumps(summary,indent=2)+'\n```\n')
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:f.write('Runtime image vulnerability summary (findings are listed for review)\n\n```json\n'+json.dumps(summary,indent=2)+'\n```\n')
           PYCODE
       - uses: actions/upload-artifact@v4
         if: always()
