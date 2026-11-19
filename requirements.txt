@@ -3,7 +3,7 @@
 # fastapi
 #   - map_project_yolo/main.py FastAPI 인스턴스 및 라우터 정의.
 fastapi==0.141.1
-# Explicit security pin: excludes CVE-2026-48818 / CVE-2026-54283.
+# fastapi 가 끌어오는 starlette 를 알려진 보안 결함이 고쳐진 판으로 직접 고정한다.
 starlette==1.6.0
 # uvicorn[standard]
 #   - ASGI 서버.
@@ -52,6 +52,6 @@ httpx[http2]==0.28.1
 #   - map_project_yolo/main.py /metrics 노출.
 prometheus-fastapi-instrumentator==8.1.0
 
-# Transitive security pins (GHSA-f4xh-w4cj-qxq8 and cryptography advisories).
+# 전이 의존(langsmith·cryptography)을 알려진 보안 결함이 고쳐진 판으로 고정한다.
 langsmith==0.12.2
 cryptography==50.0.1

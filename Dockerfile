@@ -48,8 +48,8 @@ RUN pip install --no-cache-dir --no-index --find-links=/wheels -r requirements.t
 #   - 기동 시 네트워크와 쓰기 권한이 필요 없어 오프라인·비루트에서도 결정적으로 뜬다.
 #   - ultralytics 의 이름 기반 자동 다운로드는 경로 접두사가 붙으면 동작이 달라지므로
 #     릴리스 태그로 고정한 URL 을 표준 라이브러리로 직접 받는다(이미지에 curl 불요).
-#   - Official v8.3.0 asset, retrieved and SHA256 verified 2026-09-07.
-#     The release API supplies no digest; pin the exact 5,613,764 retrieved bytes.
+#   - 공식 릴리스 자산을 내용 해시(sha256)로 고정한다. 릴리스 API 가 digest 를 주지
+#     않아 받은 파일의 해시를 직접 적었다. 내려받은 파일의 해시가 다르면 빌드가 멈춘다.
 ADD --checksum=sha256:0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1 https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n.pt /app/models/yolo11n.pt
 RUN chmod 644 /app/models/yolo11n.pt
 
