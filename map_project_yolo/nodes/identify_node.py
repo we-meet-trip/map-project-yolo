@@ -14,10 +14,10 @@ import logging
 
 from google.genai import types as genai_types
 
-from app.agent_settings import get_settings
-from app.gemini_client import get_gemini_client
-from app.nodes.kakao_local import kakao_reverse_geocode
-from app.schemas.vision_schemas import GraphState, IdentifyResult
+from map_project_yolo.agent_settings import get_settings
+from map_project_yolo.gemini_client import get_gemini_client
+from map_project_yolo.nodes.kakao_local import kakao_reverse_geocode
+from map_project_yolo.schemas.vision_schemas import GraphState, IdentifyResult
 
 logger = logging.getLogger(__name__)
 

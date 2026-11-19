@@ -9,13 +9,13 @@ import re
 from fastapi import WebSocket, WebSocketDisconnect
 from pydantic import ValidationError
 
-from app.agent_settings import get_settings
-from app.api.permit import PermitError
-from app.gemini_client import get_gemini_client
-from app.nodes.kakao_local import extract_search_keyword, is_local_query, kakao_local_search
-from app.schemas.vision_schemas import GraphState, IdentifyResult, VisionRequest, VisionResponse, WS_MAX_BYTES
-from app.vision.frame import validate_frame
-from app.vision.runtime import VisionBusy
+from map_project_yolo.agent_settings import get_settings
+from map_project_yolo.api.permit import PermitError
+from map_project_yolo.gemini_client import get_gemini_client
+from map_project_yolo.nodes.kakao_local import extract_search_keyword, is_local_query, kakao_local_search
+from map_project_yolo.schemas.vision_schemas import GraphState, IdentifyResult, VisionRequest, VisionResponse, WS_MAX_BYTES
+from map_project_yolo.vision.frame import validate_frame
+from map_project_yolo.vision.runtime import VisionBusy
 
 logger = logging.getLogger(__name__)
 _PROTOCOL = "map.vision.v1"

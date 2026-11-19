@@ -7,10 +7,10 @@ from unittest.mock import AsyncMock
 import httpx
 import pytest
 
-from app.api.permit import PermitClient, PermitError
-from app.api.ws import vision_ws
+from map_project_yolo.api.permit import PermitClient, PermitError
+from map_project_yolo.api.ws import vision_ws
 from tests.fakes import FakePermit, FakeWebSocket, fake_app, jpeg_frame
-from app.schemas.vision_schemas import IdentifyResult, VisionResponse
+from map_project_yolo.schemas.vision_schemas import IdentifyResult, VisionResponse
 
 
 @pytest.mark.parametrize("body,code", [
@@ -75,7 +75,7 @@ def test_existing_socket_policy_revocation_blocks_inference(monkeypatch, code, i
     app = fake_app()
     app.state.vision_permit.check = AsyncMock(side_effect=[SimpleNamespace(user_id=1, consent_revision=1, include_location=False), PermitError(403, code)])
     process = AsyncMock(side_effect=AssertionError("must not invoke inference"))
-    monkeypatch.setattr("app.api.ws._process", process)
+    monkeypatch.setattr("map_project_yolo.api.ws._process", process)
     socket = FakeWebSocket(app, [json.dumps({"session_id": "synthetic-request", "request_id": "r1",
                                            "frame_b64": jpeg_frame() if image else "", "voice_triggered": image,
                                            "voice_text": "synthetic question"})])
@@ -94,7 +94,7 @@ def test_policy_denied_handshake_never_accepts_or_reads_a_frame(monkeypatch, cod
     app = fake_app()
     app.state.vision_permit.check = AsyncMock(side_effect=PermitError(403, code))
     process = AsyncMock()
-    monkeypatch.setattr("app.api.ws._process", process)
+    monkeypatch.setattr("map_project_yolo.api.ws._process", process)
     socket = FakeWebSocket(app, ["must remain unread"])
     asyncio.run(vision_ws(socket))
     assert not socket.accepted and socket.close_code == 4403 and not socket.sent
@@ -139,7 +139,7 @@ def test_policy_change_while_inference_is_pending_withholds_result(monkeypatch, 
 
         permit.check = check
         process_mock = AsyncMock(side_effect=process)
-        monkeypatch.setattr("app.api.ws._process", process_mock)
+        monkeypatch.setattr("map_project_yolo.api.ws._process", process_mock)
         socket = FakeWebSocket(app, [json.dumps({"session_id": "synthetic-pending", "request_id": "r1",
             "frame_b64": jpeg_frame() if image else "", "voice_triggered": image, "voice_text": "synthetic"})])
         running = asyncio.create_task(vision_ws(socket))
@@ -173,7 +173,7 @@ def test_result_owner_must_match_original_authenticated_socket(monkeypatch, last
     app = fake_app()
     app.state.vision_permit.check = AsyncMock(side_effect=[SimpleNamespace(user_id=1, consent_revision=1, include_location=False),
         SimpleNamespace(user_id=1, consent_revision=1, include_location=False), SimpleNamespace(user_id=last_owner, consent_revision=1, include_location=False)])
-    monkeypatch.setattr("app.api.ws._process", AsyncMock(side_effect=lambda req, _: _protected_result(req)))
+    monkeypatch.setattr("map_project_yolo.api.ws._process", AsyncMock(side_effect=lambda req, _: _protected_result(req)))
     socket = FakeWebSocket(app, [json.dumps({"session_id": "synthetic-owner", "voice_text": "synthetic"})])
     asyncio.run(vision_ws(socket))
     assert [call.kwargs["consume"] for call in app.state.vision_permit.check.await_args_list] == [False, True, False]
@@ -202,7 +202,7 @@ def test_post_result_permit_uses_real_client_consume_false_wire_contract(monkeyp
         app = fake_app()
         client = PermitClient("http://user.invalid", "internal-test", 1, transport=httpx.MockTransport(transport))
         app.state.vision_permit = client
-        monkeypatch.setattr("app.api.ws._process", AsyncMock(side_effect=lambda req, _: _protected_result(req)))
+        monkeypatch.setattr("map_project_yolo.api.ws._process", AsyncMock(side_effect=lambda req, _: _protected_result(req)))
         socket = FakeWebSocket(app, [json.dumps({"session_id": "synthetic-wire", "voice_text": "synthetic"})])
         try:
             await vision_ws(socket)
@@ -229,7 +229,7 @@ def test_revoke_then_regrant_never_resumes_original_socket_epoch(monkeypatch, ph
         return SimpleNamespace(user_id=1, consent_revision=revision, include_location=False)
     app.state.vision_permit.check = AsyncMock(side_effect=[permission(1), permission(3 if phase == "before" else 1), permission(3)])
     process = AsyncMock(side_effect=lambda req, _: _protected_result(req))
-    monkeypatch.setattr("app.api.ws._process", process)
+    monkeypatch.setattr("map_project_yolo.api.ws._process", process)
     socket = FakeWebSocket(app, [json.dumps({"session_id": "synthetic-epoch", "voice_text": "synthetic"})])
     asyncio.run(vision_ws(socket))
     assert socket.close_code == 4403
@@ -245,7 +245,7 @@ def test_server_location_opt_in_controls_structured_location_before_provider(mon
     permission = SimpleNamespace(user_id=1, consent_revision=1, include_location=include_location)
     app.state.vision_permit.check = AsyncMock(return_value=permission)
     process = AsyncMock(side_effect=lambda req, _: _protected_result(req))
-    monkeypatch.setattr("app.api.ws._process", process)
+    monkeypatch.setattr("map_project_yolo.api.ws._process", process)
     socket = FakeWebSocket(app, [json.dumps({"session_id": "synthetic-location", "voice_text": "synthetic",
         "location": {"lat": 37.5, "lng": 127.0}})])
     asyncio.run(vision_ws(socket))

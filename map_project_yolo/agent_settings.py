@@ -36,7 +36,7 @@ class AgentSettings(BaseSettings):
 
     관측(로깅):
       LOG_LEVEL: 루트 로거 레벨. uvicorn 은 자기 로거만 구성하고 루트 로거에는
-        핸들러를 붙이지 않는다. app/main.py 의 _configure_logging 이 부팅 시
+        핸들러를 붙이지 않는다. map_project_yolo/main.py 의 _configure_logging 이 부팅 시
         루트 핸들러가 비어 있을 때만 stdout 핸들러를 붙여 app.* 로그를 살린다.
     """
 

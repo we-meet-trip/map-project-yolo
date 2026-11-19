@@ -22,7 +22,7 @@ os.environ.setdefault("KAKAO_REST_API_KEY", "test-kakao-key")
 @pytest.fixture(autouse=True)
 def reset_settings_cache():
     """설정 싱글턴을 테스트마다 비운다. 환경변수 변경이 실제로 반영되게 한다."""
-    import app.agent_settings as agent_settings
+    import map_project_yolo.agent_settings as agent_settings
 
     agent_settings._settings = None
     yield

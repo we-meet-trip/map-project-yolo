@@ -13,7 +13,7 @@ from __future__ import annotations
 import logging
 import re
 
-from app.log_redaction import CoordinateRedactingFilter
+from map_project_yolo.log_redaction import CoordinateRedactingFilter
 from tests.conftest import run
 from tests.fakes import FakeGeminiClient, FakeWebSocket, fake_app
 
@@ -47,8 +47,8 @@ async def _fake_kakao_search(query, api_key, lat=None, lng=None, **kwargs):
 
 def test_search_with_location_leaves_no_coordinates_in_logs(monkeypatch, caplog):
     """위치가 든 검색을 처리해도 로그 어디에도 좌표 값이 남지 않는다."""
-    from app.api import ws as ws_module
-    from app.api.ws import vision_ws
+    from map_project_yolo.api import ws as ws_module
+    from map_project_yolo.api.ws import vision_ws
 
     monkeypatch.setattr(ws_module, "get_gemini_client", lambda: FakeGeminiClient())
     monkeypatch.setattr(ws_module, "kakao_local_search", _fake_kakao_search)

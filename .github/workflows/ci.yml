@@ -43,7 +43,7 @@ jobs:
           python -m pip install -c /tmp/map-torch-constraints.txt -r requirements.txt -r requirements-dev.txt
           python -m pip check
       - name: import runtime
-        run: python -c "import app.main"
+        run: python -c "import map_project_yolo.main"
       - name: test
         run: python -m pytest -q
       - name: build runtime image

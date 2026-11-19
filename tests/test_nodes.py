@@ -12,7 +12,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from app.schemas.vision_schemas import GraphState, IdentifyResult
+from map_project_yolo.schemas.vision_schemas import GraphState, IdentifyResult
 
 
 def run(coro):
@@ -40,7 +40,7 @@ def identified(**kwargs) -> IdentifyResult:
 
 
 def test_search_skips_when_identify_missing():
-    from app.nodes.search_node import search_node
+    from map_project_yolo.nodes.search_node import search_node
 
     result = run(search_node(state()))
 
@@ -49,7 +49,7 @@ def test_search_skips_when_identify_missing():
 
 
 def test_search_skips_when_error_present():
-    from app.nodes.search_node import search_node
+    from map_project_yolo.nodes.search_node import search_node
 
     result = run(search_node(state(error="식별 실패", identify_result=identified())))
 
@@ -58,7 +58,7 @@ def test_search_skips_when_error_present():
 
 def test_search_failure_keeps_identify_result(monkeypatch):
     """검색이 죽어도 식별 결과는 남는다. 여기서 error 를 세우면 응답 전체가 실패로 나간다."""
-    from app.nodes import search_node as module
+    from map_project_yolo.nodes import search_node as module
 
     class Boom:
         def __init__(self, *a, **k):
@@ -81,7 +81,7 @@ def test_search_failure_keeps_identify_result(monkeypatch):
 
 def test_search_strips_html_and_builds_url(monkeypatch):
     """검색 요약의 태그를 걷어 내고, 제목으로 원문 링크를 만든다."""
-    from app.nodes import search_node as module
+    from map_project_yolo.nodes import search_node as module
 
     payload = {"query": {"search": [
         {"title": "경복궁", "snippet": "조선의 <span class=\"x\">법궁</span>이다"},
@@ -123,7 +123,7 @@ def test_search_strips_html_and_builds_url(monkeypatch):
 
 
 def test_identify_rejects_empty_frame():
-    from app.nodes.identify_node import identify_node
+    from map_project_yolo.nodes.identify_node import identify_node
 
     result = run(identify_node(state(frame_b64="")))
 
@@ -132,7 +132,7 @@ def test_identify_rejects_empty_frame():
 
 
 def _stub_gemini(monkeypatch, text: str):
-    from app.nodes import identify_node as module
+    from map_project_yolo.nodes import identify_node as module
 
     async def generate(**kwargs):
         return SimpleNamespace(text=text)
@@ -181,7 +181,7 @@ def test_identify_records_reason_on_bad_json(monkeypatch):
 
 
 def test_identify_records_reason_on_timeout(monkeypatch):
-    from app.nodes import identify_node as module
+    from map_project_yolo.nodes import identify_node as module
 
     async def slow(**kwargs):
         await asyncio.sleep(10)

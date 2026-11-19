@@ -21,8 +21,8 @@ def run(coro):
 
 def test_graph_runs_identify_then_search(monkeypatch):
     """identify 가 먼저, search 가 나중이다. 순서가 뒤집히면 검색이 빈손으로 돈다."""
-    from app.graph import vision_graph as module
-    from app.schemas.vision_schemas import GraphState, IdentifyResult
+    from map_project_yolo.graph import vision_graph as module
+    from map_project_yolo.schemas.vision_schemas import GraphState, IdentifyResult
 
     order: list[str] = []
 
@@ -52,8 +52,8 @@ def test_graph_runs_identify_then_search(monkeypatch):
 
 def test_graph_reaches_search_even_when_identify_failed(monkeypatch):
     """분기 엣지가 없으므로 search 는 항상 불린다 — 스스로 건너뛰는 책임은 노드에 있다."""
-    from app.graph import vision_graph as module
-    from app.schemas.vision_schemas import GraphState
+    from map_project_yolo.graph import vision_graph as module
+    from map_project_yolo.schemas.vision_schemas import GraphState
 
     visited: list[str] = []
 
@@ -82,7 +82,7 @@ def test_graph_reaches_search_even_when_identify_failed(monkeypatch):
 
 def test_detector_returns_empty_on_broken_frame():
     """디코딩이 실패해도 예외를 올리지 않는다 — 연결 하나가 통째로 끊긴다."""
-    from app.vision.detector import YoloDetector
+    from map_project_yolo.vision.detector import YoloDetector
 
     detector = YoloDetector.__new__(YoloDetector)
     detector._model = None

@@ -19,15 +19,15 @@ from typing import AsyncIterator
 from fastapi import FastAPI, WebSocket
 from prometheus_fastapi_instrumentator import Instrumentator
 
-from app.agent_settings import get_settings
-from app.api.ws import vision_ws
-from app.api.permit import PermitClient
-from app.vision.runtime import VisionRuntime
+from map_project_yolo.agent_settings import get_settings
+from map_project_yolo.api.ws import vision_ws
+from map_project_yolo.api.permit import PermitClient
+from map_project_yolo.vision.runtime import VisionRuntime
 
 # import 만으로 uvicorn.access·httpx 로거에 좌표 가림 필터가 걸린다.
-from app.log_redaction import CoordinateRedactingFilter
-from app.graph.vision_graph import build_graph
-from app.vision.detector import YoloDetector
+from map_project_yolo.log_redaction import CoordinateRedactingFilter
+from map_project_yolo.graph.vision_graph import build_graph
+from map_project_yolo.vision.detector import YoloDetector
 
 logger = logging.getLogger(__name__)
 

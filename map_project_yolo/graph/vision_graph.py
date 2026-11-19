@@ -9,9 +9,9 @@ from __future__ import annotations
 
 from langgraph.graph import END, START, StateGraph
 
-from app.nodes.identify_node import identify_node
-from app.nodes.search_node import search_node
-from app.schemas.vision_schemas import GraphState
+from map_project_yolo.nodes.identify_node import identify_node
+from map_project_yolo.nodes.search_node import search_node
+from map_project_yolo.schemas.vision_schemas import GraphState
 
 
 def build_graph():

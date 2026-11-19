@@ -1,7 +1,7 @@
 """Keep the monitoring contract intact when upgrading FastAPI/Starlette."""
 from fastapi.testclient import TestClient
 
-from app.main import app
+from map_project_yolo.main import app
 
 
 def test_http_metrics_survive_framework_security_upgrade():

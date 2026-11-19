@@ -26,9 +26,9 @@ def main():
     import numpy as np
     import torch
     from PIL import Image
-    import app.main
-    from app.vision.detector import YoloDetector
-    from app.vision.frame import validate_frame
+    import map_project_yolo.main
+    from map_project_yolo.vision.detector import YoloDetector
+    from map_project_yolo.vision.frame import validate_frame
     assert torch.version.cuda is None
     torch.set_num_threads(1)
     assert re.search(r'GUI:\s+NONE', cv2.getBuildInformation())

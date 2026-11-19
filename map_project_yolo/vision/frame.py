@@ -5,7 +5,7 @@ from io import BytesIO
 
 from PIL import Image, UnidentifiedImageError
 
-from app.schemas.vision_schemas import FRAME_MAX_BYTES, FRAME_MAX_PIXELS
+from map_project_yolo.schemas.vision_schemas import FRAME_MAX_BYTES, FRAME_MAX_PIXELS
 
 
 def validate_frame(frame_b64: str) -> None:

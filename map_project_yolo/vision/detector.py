@@ -11,8 +11,8 @@ from __future__ import annotations
 import base64
 import logging
 
-from app.schemas.vision_schemas import DetectedObject
-from app.vision.frame import validate_frame
+from map_project_yolo.schemas.vision_schemas import DetectedObject
+from map_project_yolo.vision.frame import validate_frame
 
 logger = logging.getLogger(__name__)
 

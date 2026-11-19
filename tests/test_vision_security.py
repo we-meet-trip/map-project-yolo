@@ -13,10 +13,10 @@ from fastapi import FastAPI, WebSocketDisconnect
 from fastapi.testclient import TestClient
 from PIL import Image
 
-from app.api.permit import PermitClient, PermitError
-from app.api.ws import vision_ws
-from app.schemas.vision_schemas import FRAME_MAX_BASE64
-from app.vision.runtime import VisionBusy, VisionRuntime
+from map_project_yolo.api.permit import PermitClient, PermitError
+from map_project_yolo.api.ws import vision_ws
+from map_project_yolo.schemas.vision_schemas import FRAME_MAX_BASE64
+from map_project_yolo.vision.runtime import VisionBusy, VisionRuntime
 from tests.fakes import FakeGeminiClient, FakePermit, FakeWebSocket, fake_app, jpeg_frame
 
 
@@ -27,8 +27,8 @@ def message(**overrides):
 @pytest.fixture
 def gemini(monkeypatch):
     client = FakeGeminiClient()
-    monkeypatch.setattr("app.api.ws.get_gemini_client", lambda: client)
-    monkeypatch.setattr("app.api.ws.is_local_query", lambda _: False)
+    monkeypatch.setattr("map_project_yolo.api.ws.get_gemini_client", lambda: client)
+    monkeypatch.setattr("map_project_yolo.api.ws.is_local_query", lambda _: False)
     return client
 
 
@@ -218,8 +218,8 @@ def test_real_asgi_websocket_negotiates_protocol_and_echoes_request_id(gemini):
 
 
 def test_service_fails_before_loading_model_without_internal_token(monkeypatch):
-    from app import main
-    from app.agent_settings import get_settings
+    from map_project_yolo import main
+    from map_project_yolo.agent_settings import get_settings
     from pydantic import SecretStr
     monkeypatch.setattr(get_settings(), "VISION_INTERNAL_TOKEN", SecretStr(""))
     constructor = AsyncMock()
@@ -233,7 +233,7 @@ def test_service_fails_before_loading_model_without_internal_token(monkeypatch):
 
 
 def test_failed_model_startup_closes_permit_and_worker(monkeypatch):
-    from app import main
+    from map_project_yolo import main
     from unittest.mock import Mock
 
     permit = Mock(aclose=AsyncMock())

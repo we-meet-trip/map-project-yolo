@@ -47,7 +47,7 @@ def limit_two(monkeypatch):
 @pytest.fixture
 def stub_gemini(monkeypatch):
     """모델 호출을 대역으로 바꾼다. 실제 외부 호출은 일어나지 않는다."""
-    from app.api import ws as ws_module
+    from map_project_yolo.api import ws as ws_module
 
     client = FakeGeminiClient()
     monkeypatch.setattr(ws_module, "get_gemini_client", lambda: client)
@@ -58,7 +58,7 @@ def stub_gemini(monkeypatch):
 
 def test_ignored_frames_do_not_consume_quota(limit_two, stub_gemini):
     """음성 트리거도 텍스트도 없는 프레임은 아무 일도 하지 않으므로 상한을 쓰지 않는다."""
-    from app.api.ws import vision_ws
+    from map_project_yolo.api.ws import vision_ws
 
     app = fake_app()
     socket = FakeWebSocket(app, [frame() for _ in range(20)])
@@ -72,7 +72,7 @@ def test_ignored_frames_do_not_consume_quota(limit_two, stub_gemini):
 
 def test_malformed_frames_do_not_consume_quota(limit_two, stub_gemini):
     """형식이 깨진 요청은 사유만 돌려주고 상한은 쓰지 않는다."""
-    from app.api.ws import vision_ws
+    from map_project_yolo.api.ws import vision_ws
 
     app = fake_app()
     socket = FakeWebSocket(app, ["{ not json" for _ in range(10)])
@@ -86,7 +86,7 @@ def test_malformed_frames_do_not_consume_quota(limit_two, stub_gemini):
 
 def test_text_conversation_consumes_quota(limit_two, stub_gemini):
     """텍스트 대화는 모델을 부르므로 상한을 쓴다. 다 쓰면 사유를 알리고 닫는다."""
-    from app.api.ws import vision_ws
+    from map_project_yolo.api.ws import vision_ws
 
     app = fake_app()
     socket = FakeWebSocket(app, [frame(voice_text=f"질문 {i}") for i in range(5)])
@@ -103,7 +103,7 @@ def test_text_conversation_consumes_quota(limit_two, stub_gemini):
 
 def test_image_recognition_consumes_quota(limit_two, stub_gemini):
     """이미지 인식도 외부를 부르므로 같은 상한을 쓴다."""
-    from app.api.ws import vision_ws
+    from map_project_yolo.api.ws import vision_ws
 
     detector = FakeDetector()
     graph = FakeGraph()
@@ -122,7 +122,7 @@ def test_image_recognition_consumes_quota(limit_two, stub_gemini):
 
 def test_mixed_traffic_only_counts_external_calls(limit_two, stub_gemini):
     """무시·오류 프레임이 섞여 있어도 상한은 외부를 부른 횟수만 따라간다."""
-    from app.api.ws import vision_ws
+    from map_project_yolo.api.ws import vision_ws
 
     app = fake_app()
     incoming = [
@@ -144,7 +144,7 @@ def test_mixed_traffic_only_counts_external_calls(limit_two, stub_gemini):
 
 def test_quota_default_matches_setting(monkeypatch, stub_gemini):
     """설정값이 그대로 상한이 된다(하드코딩된 숫자가 끼어들지 않는다)."""
-    from app.api.ws import vision_ws
+    from map_project_yolo.api.ws import vision_ws
 
     monkeypatch.setenv("WS_MAX_JOBS_PER_CONNECTION", "3")
     app = fake_app()

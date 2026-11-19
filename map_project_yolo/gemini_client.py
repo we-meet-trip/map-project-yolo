@@ -9,7 +9,7 @@ from functools import lru_cache
 
 from google import genai
 
-from app.agent_settings import get_settings
+from map_project_yolo.agent_settings import get_settings
 
 
 @lru_cache(maxsize=1)

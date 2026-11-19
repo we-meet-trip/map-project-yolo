@@ -8,7 +8,7 @@ import json
 from types import SimpleNamespace
 
 from fastapi import WebSocketDisconnect
-from app.vision.runtime import VisionRuntime
+from map_project_yolo.vision.runtime import VisionRuntime
 
 
 class FakeWebSocket:
@@ -95,7 +95,7 @@ class FakePermit:
         self.calls = []
 
     async def check(self, token, *, consume, expected_revision=None):
-        from app.api.permit import PermitError
+        from map_project_yolo.api.permit import PermitError
         self.calls.append(consume)
         if consume:
             if self.used >= self.limit:

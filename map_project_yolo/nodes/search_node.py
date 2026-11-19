@@ -14,7 +14,7 @@ import urllib.parse
 
 import httpx
 
-from app.schemas.vision_schemas import GraphState, SearchResult
+from map_project_yolo.schemas.vision_schemas import GraphState, SearchResult
 
 logger = logging.getLogger(__name__)
 
