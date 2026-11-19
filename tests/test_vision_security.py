@@ -219,7 +219,7 @@ def test_real_asgi_websocket_negotiates_protocol_and_echoes_request_id(gemini):
 
 def test_service_fails_before_loading_model_without_internal_token(monkeypatch):
     from map_project_yolo import main
-    from map_project_yolo.agent_settings import get_settings
+    from map_project_yolo.settings import get_settings
     from pydantic import SecretStr
     monkeypatch.setattr(get_settings(), "VISION_INTERNAL_TOKEN", SecretStr(""))
     constructor = AsyncMock()

@@ -1,6 +1,6 @@
 """yolo-vision-agent 환경설정.
 
-`AgentSettings(BaseSettings)` 는 환경 변수(또는 `.env`) 로부터 값을
+`VisionSettings(BaseSettings)` 는 환경 변수(또는 `.env`) 로부터 값을
 읽어 들이는 설정 객체이고, `get_settings()` 는 프로세스 1회 캐시되는
 싱글톤 접근자다.
 """
@@ -10,7 +10,7 @@ from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class AgentSettings(BaseSettings):
+class VisionSettings(BaseSettings):
     """yolo-vision-agent 의 모든 환경 변수 묶음.
 
     model_config:
@@ -64,12 +64,12 @@ class AgentSettings(BaseSettings):
     LOG_LEVEL: str = "INFO"
 
 
-_settings: AgentSettings | None = None
+_settings: VisionSettings | None = None
 
 
-def get_settings() -> AgentSettings:
-    """프로세스 단위 싱글톤 AgentSettings 접근자."""
+def get_settings() -> VisionSettings:
+    """프로세스 단위 싱글톤 VisionSettings 접근자."""
     global _settings
     if _settings is None:
-        _settings = AgentSettings()
+        _settings = VisionSettings()
     return _settings

@@ -10,7 +10,7 @@ starlette==1.6.0
 uvicorn[standard]==0.47.0
 
 # pydantic-settings
-#   - map_project_yolo/agent_settings.py AgentSettings 환경 변수 로딩.
+#   - map_project_yolo/settings.py VisionSettings 환경 변수 로딩.
 pydantic-settings>=2.14.1,<3.0
 
 # websockets

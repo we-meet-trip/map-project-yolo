@@ -19,7 +19,7 @@ from typing import AsyncIterator
 from fastapi import FastAPI, WebSocket
 from prometheus_fastapi_instrumentator import Instrumentator
 
-from map_project_yolo.agent_settings import get_settings
+from map_project_yolo.settings import get_settings
 from map_project_yolo.api.ws import vision_ws
 from map_project_yolo.api.permit import PermitClient
 from map_project_yolo.vision.runtime import VisionRuntime

@@ -1,6 +1,6 @@
 """pytest 공용 fixture / 환경 부트스트랩.
 
-`AgentSettings` 는 프로세스 1회 캐시되는 싱글턴이라, 테스트마다 다른 상한을
+`VisionSettings` 는 프로세스 1회 캐시되는 싱글턴이라, 테스트마다 다른 상한을
 쓰려면 캐시 슬롯을 비워 줘야 한다. 여기서 그 정리를 맡는다.
 
 호출 관계:
@@ -22,11 +22,11 @@ os.environ.setdefault("KAKAO_REST_API_KEY", "test-kakao-key")
 @pytest.fixture(autouse=True)
 def reset_settings_cache():
     """설정 싱글턴을 테스트마다 비운다. 환경변수 변경이 실제로 반영되게 한다."""
-    import map_project_yolo.agent_settings as agent_settings
+    import map_project_yolo.settings as settings_module
 
-    agent_settings._settings = None
+    settings_module._settings = None
     yield
-    agent_settings._settings = None
+    settings_module._settings = None
 
 
 def run(coro):

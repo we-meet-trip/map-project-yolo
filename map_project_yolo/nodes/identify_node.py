@@ -14,7 +14,7 @@ import logging
 
 from google.genai import types as genai_types
 
-from map_project_yolo.agent_settings import get_settings
+from map_project_yolo.settings import get_settings
 from map_project_yolo.gemini_client import get_gemini_client
 from map_project_yolo.nodes.kakao_local import kakao_reverse_geocode
 from map_project_yolo.schemas.vision_schemas import GraphState, IdentifyResult
