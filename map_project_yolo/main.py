@@ -93,14 +93,14 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         app.state.job_timeout_seconds = settings.JOB_TIMEOUT_SECONDS
 
         logger.info(
-            "yolo-vision-agent: initialized model=%s",
+            "map-project-yolo: initialized model=%s",
             settings.YOLO_MODEL_PATH,
         )
         yield
     finally:
         app.state.vision_runtime.close()
         await app.state.vision_permit.aclose()
-        logger.info("yolo-vision-agent: shutdown")
+        logger.info("map-project-yolo: shutdown")
 
 
 app = FastAPI(
@@ -116,7 +116,7 @@ Instrumentator().instrument(app).expose(app, include_in_schema=False)
 @app.get("/health")
 async def health() -> dict[str, str]:
     """헬스 체크."""
-    return {"status": "ok", "service": "yolo-vision-agent"}
+    return {"status": "ok", "service": "yolo"}
 
 
 @app.websocket("/ws/vision")

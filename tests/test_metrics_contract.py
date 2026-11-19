@@ -15,3 +15,11 @@ def test_http_metrics_survive_framework_security_upgrade():
     assert "http_request_duration_seconds_bucket{" in response.text
     assert 'handler="/health"' in response.text
     assert "/unknown-metrics-probe" not in response.text
+
+
+def test_health_reports_short_service_name():
+    # The health body follows the same shape as the other services ("agent", "hub").
+    client = TestClient(app)
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok", "service": "yolo"}
