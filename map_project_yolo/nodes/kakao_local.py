@@ -86,7 +86,7 @@ def extract_search_keyword(text: str) -> str:
     area = area_match.group(1).strip() if area_match else ""
 
     if found_type:
-        # "에리카 빵집" 또는 그냥 "빵집"
+        # "OO역 빵집" 또는 그냥 "빵집"
         return f"{area} {found_type}".strip() if area else found_type
 
     # 장소 유형 없으면 불용어 제거
@@ -106,7 +106,7 @@ async def kakao_local_search(
     """Kakao 키워드 장소 검색.
 
     Args:
-        query: 검색어 (예: "에리카 빵집")
+        query: 검색어 (예: "OO역 빵집")
         api_key: Kakao REST API 키
         lat: 중심 위도 (없으면 전국 검색)
         lng: 중심 경도
