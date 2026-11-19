@@ -55,3 +55,7 @@ jobs:
         # 이미지는 Dockerfile 의 Python 판(3.12)과 같은 줄에서 한 번만 만든다.
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.build_image && matrix.python-version == '3.12' }}
         run: docker build --tag map-runtime:ci .
+      - name: check license notices in runtime image
+        # 실행 단계의 작업 경로(/app)에 LICENSE·NOTICE 가 들어갔는지 본다. 이미지에는 AGPL-3.0 구성 요소가 함께 들어간다.
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.build_image && matrix.python-version == '3.12' }}
+        run: docker run --rm --network none --entrypoint sh map-runtime:ci -ec 'test -s /app/LICENSE && test -s /app/NOTICE'
