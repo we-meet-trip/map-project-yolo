@@ -1,0 +1,29 @@
+[build-system]
+# setuptools 77 부터 PEP 639 의 license 식·license-files 를 지원한다.
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "map-project-yolo"
+version = "1.0.0"
+description = "MAP 비전 서비스: WebSocket 으로 받은 사진을 YOLO 로 탐지하고 Gemini 로 식별한다"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICEN[CS]E*", "NOTICE"]
+requires-python = ">=3.11"
+authors = [{ name = "The MAP Contributors" }]
+# 의존성 판 고정은 requirements.txt 한 곳에서 관리한다(Dockerfile·CI 와 같은 목록).
+dynamic = ["dependencies", "optional-dependencies"]
+
+[project.urls]
+Repository = "https://github.com/we-meet-trip/map-project-yolo"
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+optional-dependencies.dev = { file = ["requirements-dev.txt"] }
+
+[tool.setuptools.packages.find]
+include = ["map_project_yolo*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
