@@ -30,6 +30,7 @@ jobs:
           git rev-parse HEAD > reports/source-sha.txt
           docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges:true --tmpfs /tmp:rw,noexec,nosuid,size=64m --entrypoint sh map-runtime:audit -ec '
             test "$(id -u)" = 10001
+            test -s /app/LICENSE && test -s /app/NOTICE
             test ! -e /usr/bin/perl
             test -z "$(find /usr/bin /usr/sbin -xdev -type f -perm /6000 -print -quit)"
             python -m pip check

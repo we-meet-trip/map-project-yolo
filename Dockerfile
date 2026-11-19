@@ -60,6 +60,9 @@ RUN apt-get purge -y --allow-remove-essential perl-base \
  && find /usr/bin /usr/sbin -xdev -type f -perm /6000 -exec chmod a-s {} + \
  && test ! -e /usr/bin/perl \
  && test -z "$(find /usr/bin /usr/sbin -xdev -type f -perm /6000 -print -quit)"
+# 라이선스와 제3자 구성 요소 고지를 이미지에도 넣는다. 이미지에는 AGPL-3.0 인
+# Ultralytics 패키지와 모델 가중치가 함께 들어가므로, 이미지만 받은 사람도 고지를 볼 수 있어야 한다.
+COPY LICENSE NOTICE ./
 # 애플리케이션 소스를 app 사용자 소유로 복사.
 COPY --chown=app:app map_project_yolo ./map_project_yolo
 USER app
