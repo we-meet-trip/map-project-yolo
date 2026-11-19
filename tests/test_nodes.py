@@ -56,9 +56,72 @@ def test_search_skips_when_error_present():
     assert result.search_results == []
 
 
+CONTACT = "https://example.com/operator-contact"
+
+
+def test_search_makes_no_call_without_operator_contact(monkeypatch):
+    """연락처를 설정하지 않으면 위키백과를 부르지 않는다. 클라이언트도 만들지 않는다."""
+    from map_project_yolo.nodes import search_node as module
+
+    created = []
+
+    class Forbidden:
+        def __init__(self, *a, **k):
+            created.append(k)
+            raise AssertionError("must not create an HTTP client without a contact")
+
+    monkeypatch.delenv("YOLO_WIKIPEDIA_CONTACT", raising=False)
+    monkeypatch.setattr(module.httpx, "AsyncClient", Forbidden)
+
+    result = run(module.search_node(state(identify_result=identified())))
+
+    assert created == []
+    assert result.search_results == []
+    assert result.error is None
+    assert result.identify_result is not None
+
+
+def test_search_user_agent_carries_operator_contact(monkeypatch):
+    """설정한 연락처가 User-Agent 에 그대로 들어간다(Wikimedia User-Agent 정책)."""
+    from map_project_yolo.nodes import search_node as module
+
+    seen = {}
+
+    class Resp:
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {"query": {"search": []}}
+
+    class Client:
+        def __init__(self, *a, **k):
+            seen.update(k)
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *a):
+            return False
+
+        async def get(self, url, params=None):
+            seen["url"] = url
+            return Resp()
+
+    monkeypatch.setenv("YOLO_WIKIPEDIA_CONTACT", CONTACT)
+    monkeypatch.setattr(module.httpx, "AsyncClient", Client)
+
+    run(module.search_node(state(identify_result=identified())))
+
+    assert seen["headers"]["User-Agent"] == f"map-project-yolo/1.0.0 ({CONTACT})"
+    assert seen["url"].startswith("https://ko.wikipedia.org/")
+
+
 def test_search_failure_keeps_identify_result(monkeypatch):
     """검색이 죽어도 식별 결과는 남는다. 여기서 error 를 세우면 응답 전체가 실패로 나간다."""
     from map_project_yolo.nodes import search_node as module
+
+    monkeypatch.setenv("YOLO_WIKIPEDIA_CONTACT", CONTACT)
 
     class Boom:
         def __init__(self, *a, **k):
@@ -82,6 +145,8 @@ def test_search_failure_keeps_identify_result(monkeypatch):
 def test_search_strips_html_and_builds_url(monkeypatch):
     """검색 요약의 태그를 걷어 내고, 제목으로 원문 링크를 만든다."""
     from map_project_yolo.nodes import search_node as module
+
+    monkeypatch.setenv("YOLO_WIKIPEDIA_CONTACT", CONTACT)
 
     payload = {"query": {"search": [
         {"title": "경복궁", "snippet": "조선의 <span class=\"x\">법궁</span>이다"},

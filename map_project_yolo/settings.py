@@ -34,6 +34,11 @@ class VisionSettings(BaseSettings):
         인식 1건마다 외부 모델을 부르므로, 상한이 없으면 연결 하나로 호출
         한도를 소진시켜 같은 키를 쓰는 다른 기능까지 멈춘다.
 
+    검색(위키백과):
+      YOLO_WIKIPEDIA_CONTACT: 위키백과 API 를 부를 때 User-Agent 에 넣는 운영자 연락처
+        (URL 또는 이메일). Wikimedia User-Agent 정책은 요청을 보내는 쪽의 연락처를
+        요구한다. 비어 있으면 위키백과를 부르지 않고 검색 결과를 빈 목록으로 둔다.
+
     관측(로깅):
       LOG_LEVEL: 루트 로거 레벨. uvicorn 은 자기 로거만 구성하고 루트 로거에는
         핸들러를 붙이지 않는다. map_project_yolo/main.py 의 _configure_logging 이 부팅 시
@@ -60,6 +65,8 @@ class VisionSettings(BaseSettings):
     VISION_MAX_CONCURRENT_JOBS: int = Field(default=2, ge=1, le=8)
     WS_IDLE_TIMEOUT_SECONDS: float = Field(default=120.0, gt=0)
     WS_MAX_MESSAGES_PER_CONNECTION: int = Field(default=240, ge=1)
+
+    YOLO_WIKIPEDIA_CONTACT: str = Field(default="", max_length=256)
 
     LOG_LEVEL: str = "INFO"
 

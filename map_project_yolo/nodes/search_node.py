@@ -3,7 +3,9 @@
 IdentifyResult.search_query 를 받아 외부 API 를 호출하고
 SearchResult 리스트를 반환한다.
 
-현재 구현: Wikipedia API (무료, 키 불필요).
+현재 구현: Wikipedia API. 키는 필요 없지만 Wikimedia User-Agent 정책이 요청을
+보내는 쪽의 연락처를 요구하므로, 운영자가 YOLO_WIKIPEDIA_CONTACT 를 설정했을 때만
+부른다. 설정이 없으면 외부 호출 없이 빈 검색 결과로 넘긴다.
 확장 포인트: 카카오 로컬 API, Google Places API 등 추가 가능.
 """
 from __future__ import annotations
@@ -15,27 +17,35 @@ import urllib.parse
 import httpx
 
 from map_project_yolo.schemas.vision_schemas import GraphState, SearchResult
+from map_project_yolo.settings import get_settings
 
 logger = logging.getLogger(__name__)
 
 _WIKIPEDIA_API = "https://ko.wikipedia.org/w/api.php"
 _SEARCH_LIMIT = 3
+_USER_AGENT_PRODUCT = "map-project-yolo/1.0.0"
 
 
 async def search_node(state: GraphState) -> GraphState:
     """검색 쿼리로 Wikipedia 를 조회해 state.search_results 를 채우는 노드.
 
     state.identify_result 가 없거나 state.error 가 있으면 스킵.
+    운영자 연락처(YOLO_WIKIPEDIA_CONTACT)가 없으면 부르지 않고 빈 목록으로 넘긴다.
     검색 실패는 빈 목록으로 넘긴다 — 곁들이는 설명이라 식별 결과까지 버리지 않는다.
     """
     if state.error or state.identify_result is None:
+        return state
+
+    contact = get_settings().YOLO_WIKIPEDIA_CONTACT.strip()
+    if not contact:
+        state.search_results = []
         return state
 
     query = state.identify_result.search_query
     results: list[SearchResult] = []
 
     try:
-        headers = {"User-Agent": "map-project-yolo/1.0.0 (+https://github.com/we-meet-trip/map-project-yolo)"}
+        headers = {"User-Agent": f"{_USER_AGENT_PRODUCT} ({contact})"}
         async with httpx.AsyncClient(timeout=10.0, headers=headers) as client:
             # 1단계: 검색
             params = {
