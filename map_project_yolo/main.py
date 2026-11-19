@@ -63,7 +63,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """앱 기동·종료 훅.
 
     기동:
-      - GEMINI_API_KEY 검증.
+      - YOLO_GEMINI_API_KEY 검증.
       - YoloDetector 생성 → app.state 주입.
       - build_graph() 로 LangGraph 인스턴스 → app.state.graph.
       - app.state.job_timeout_seconds 설정.
@@ -74,15 +74,15 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
     # 루트 로거를 가장 먼저 세운다. 아래 부팅 실패 사유와 모델 적재 기록이
     # 전부 map_project_yolo.* 로거를 쓴다.
-    _configure_logging(settings.LOG_LEVEL)
-    if not settings.GEMINI_API_KEY.get_secret_value():
-        raise RuntimeError("GEMINI_API_KEY is required")
+    _configure_logging(settings.YOLO_LOG_LEVEL)
+    if not settings.YOLO_GEMINI_API_KEY.get_secret_value():
+        raise RuntimeError("YOLO_GEMINI_API_KEY (or MAP_PROJECT_GEMINI_API_KEY) is required")
 
     app.state.vision_permit = PermitClient(
-        settings.USER_SERVICE_BASE_URL, settings.VISION_INTERNAL_TOKEN.get_secret_value(),
-        settings.VISION_PERMIT_TIMEOUT_SECONDS,
+        settings.YOLO_USER_SERVICE_BASE_URL, settings.MAP_PROJECT_VISION_INTERNAL_TOKEN.get_secret_value(),
+        settings.YOLO_PERMIT_TIMEOUT_SECONDS,
     )
-    app.state.vision_runtime = VisionRuntime(settings.VISION_MAX_CONCURRENT_JOBS)
+    app.state.vision_runtime = VisionRuntime(settings.YOLO_MAX_CONCURRENT_JOBS)
 
     try:
         app.state.detector = YoloDetector(
@@ -90,7 +90,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             confidence=settings.YOLO_CONFIDENCE,
         )
         app.state.graph = build_graph()
-        app.state.job_timeout_seconds = settings.JOB_TIMEOUT_SECONDS
+        app.state.job_timeout_seconds = settings.YOLO_JOB_TIMEOUT_SECONDS
 
         logger.info(
             "map-project-yolo: initialized model=%s",

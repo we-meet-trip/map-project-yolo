@@ -3,7 +3,7 @@
 `/ws/vision`은 `map.vision.v1`, `bearer.<사용자 JWT>` WebSocket subprotocol을
 함께 받아 인증한다. 서버는 `map.vision.v1`만 협상 응답에 싣는다.
 User BFF의 `POST /api/v1/vision/permit`을 연결 시 `{consume:false}`,
-매 처리 직전에 `{consume:true}`로 호출한다. JWT와 `VISION_INTERNAL_TOKEN`을
+매 처리 직전에 `{consume:true}`로 호출한다. JWT와 `MAP_PROJECT_VISION_INTERNAL_TOKEN`을
 함께 보내며 만료·탈퇴·계정 quota 초과·BFF 장애는 모두 외부 추론 전에 막는다.
 계정 quota는 User Redis가 소유하므로 재접속으로 초기화되지 않는다.
 
@@ -21,7 +21,7 @@ User BFF의 `POST /api/v1/vision/permit`을 연결 시 `{consume:false}`,
   native 호출 자체를 강제 종료하는 기능은 없으므로 실제 모델이 멈춘 경우에는
   운영자가 프로세스 상태를 확인해야 한다.
 
-`VISION_INTERNAL_TOKEN`은 User와 같은 값을 주입해야 한다. 기본 계정 일일 상한은
+`MAP_PROJECT_VISION_INTERNAL_TOKEN`은 User와 같은 값을 주입해야 한다. 기본 계정 일일 상한은
 User가 관리하며 운영 확정값을 User 설정으로 적용한다. 학습 수집은 하지 않는다.
 텍스트 장소 검색은 Kakao 실측 결과가 없으면 실패하며 모델로 장소를 지어내지 않는다.
 

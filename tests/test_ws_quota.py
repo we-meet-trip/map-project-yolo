@@ -41,7 +41,7 @@ def frame(**kwargs) -> str:
 @pytest.fixture
 def limit_two(monkeypatch):
     """상한을 2 로 낮춰 경계를 짧게 만든다."""
-    monkeypatch.setenv("WS_MAX_JOBS_PER_CONNECTION", "2")
+    monkeypatch.setenv("YOLO_WS_MAX_JOBS", "2")
 
 
 @pytest.fixture
@@ -146,7 +146,7 @@ def test_quota_default_matches_setting(monkeypatch, stub_gemini):
     """설정값이 그대로 상한이 된다(하드코딩된 숫자가 끼어들지 않는다)."""
     from map_project_yolo.api.ws import vision_ws
 
-    monkeypatch.setenv("WS_MAX_JOBS_PER_CONNECTION", "3")
+    monkeypatch.setenv("YOLO_WS_MAX_JOBS", "3")
     app = fake_app()
     socket = FakeWebSocket(app, [frame(voice_text="q") for _ in range(10)])
 

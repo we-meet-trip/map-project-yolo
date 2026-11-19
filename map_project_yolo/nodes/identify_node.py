@@ -54,9 +54,9 @@ async def identify_node(state: GraphState) -> GraphState:
 
     if state.location:
         address = ""
-        if settings.KAKAO_REST_API_KEY:
+        if settings.MAP_PROJECT_KAKAO_REST_API_KEY:
             address = await kakao_reverse_geocode(
-                state.location.lat, state.location.lng, settings.KAKAO_REST_API_KEY
+                state.location.lat, state.location.lng, settings.MAP_PROJECT_KAKAO_REST_API_KEY
             )
         if address:
             location_line = f"사용자 현재 위치: {address}"
@@ -95,10 +95,10 @@ async def identify_node(state: GraphState) -> GraphState:
     try:
         response = await asyncio.wait_for(
             client.aio.models.generate_content(
-                model=settings.GEMINI_MODEL,
+                model=settings.MAP_PROJECT_GEMINI_MODEL,
                 contents=[prompt, image_part],
             ),
-            timeout=settings.GEMINI_TIMEOUT_SECONDS,
+            timeout=settings.YOLO_GEMINI_TIMEOUT_SECONDS,
         )
         raw = response.text.strip()
         # 마크다운 코드블록 제거

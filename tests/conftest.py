@@ -15,8 +15,8 @@ import pytest
 
 # 실제 호출은 일어나지 않지만, 키가 비어 있으면 텍스트 대화가 카카오 경로로
 # 가지 않고 곧장 모델 경로로 빠진다. 두 갈래를 모두 테스트하려면 값이 필요하다.
-os.environ.setdefault("GEMINI_API_KEY", "test-key")
-os.environ.setdefault("KAKAO_REST_API_KEY", "test-kakao-key")
+os.environ.setdefault("YOLO_GEMINI_API_KEY", "test-key")
+os.environ.setdefault("MAP_PROJECT_KAKAO_REST_API_KEY", "test-kakao-key")
 
 
 @pytest.fixture(autouse=True)

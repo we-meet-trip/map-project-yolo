@@ -24,7 +24,7 @@ class PermitClient:
     def __init__(self, base_url: str, internal_token: str, timeout: float,
                  *, transport=None):
         if not internal_token:
-            raise ValueError("VISION_INTERNAL_TOKEN is required")
+            raise ValueError("MAP_PROJECT_VISION_INTERNAL_TOKEN is required")
         self._client = httpx.AsyncClient(
             base_url=base_url.rstrip("/"), timeout=timeout, follow_redirects=False,
             headers={"X-Internal-Token": internal_token}, transport=transport,

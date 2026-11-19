@@ -221,11 +221,11 @@ def test_service_fails_before_loading_model_without_internal_token(monkeypatch):
     from map_project_yolo import main
     from map_project_yolo.settings import get_settings
     from pydantic import SecretStr
-    monkeypatch.setattr(get_settings(), "VISION_INTERNAL_TOKEN", SecretStr(""))
+    monkeypatch.setattr(get_settings(), "MAP_PROJECT_VISION_INTERNAL_TOKEN", SecretStr(""))
     constructor = AsyncMock()
     monkeypatch.setattr(main, "YoloDetector", constructor)
     async def scenario():
-        with pytest.raises(ValueError, match="VISION_INTERNAL_TOKEN"):
+        with pytest.raises(ValueError, match="MAP_PROJECT_VISION_INTERNAL_TOKEN"):
             async with main.lifespan(FastAPI()):
                 pass
     asyncio.run(scenario())

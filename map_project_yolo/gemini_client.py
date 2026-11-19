@@ -16,4 +16,4 @@ from map_project_yolo.settings import get_settings
 def get_gemini_client() -> genai.Client:
     """프로세스 단위로 캐시되는 Gemini 클라이언트."""
     settings = get_settings()
-    return genai.Client(api_key=settings.GEMINI_API_KEY.get_secret_value())
+    return genai.Client(api_key=settings.YOLO_GEMINI_API_KEY.get_secret_value())

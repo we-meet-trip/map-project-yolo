@@ -255,7 +255,7 @@ def test_identify_records_reason_on_timeout(monkeypatch):
         aio=SimpleNamespace(models=SimpleNamespace(generate_content=slow))
     )
     monkeypatch.setattr(module, "get_gemini_client", lambda: client)
-    monkeypatch.setenv("GEMINI_TIMEOUT_SECONDS", "0.01")
+    monkeypatch.setenv("YOLO_GEMINI_TIMEOUT_SECONDS", "0.01")
 
     result = run(module.identify_node(state()))
 
