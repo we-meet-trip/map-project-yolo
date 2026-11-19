@@ -55,8 +55,8 @@ python3 -m venv .venv && . .venv/bin/activate
 python -m pip install --upgrade pip
 # CPU 전용 torch 를 먼저 고르고 그 판을 고정한다(CI 와 같은 순서)
 python -m pip install --index-url https://download.pytorch.org/whl/cpu torch torchvision
-python -m pip freeze | grep -E '^(torch|torchvision)==' > torch-constraints.txt
-python -m pip install -c torch-constraints.txt -r requirements.txt -r requirements-dev.txt
+python -m pip freeze | grep -E '^(torch|torchvision)==' > .venv/torch-constraints.txt
+python -m pip install -c .venv/torch-constraints.txt -r requirements.txt -r requirements-dev.txt
 python -m pytest -q
 ```
 
