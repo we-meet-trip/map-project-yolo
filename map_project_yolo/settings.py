@@ -6,7 +6,7 @@
 """
 from __future__ import annotations
 
-from pydantic import AliasChoices, Field, SecretStr
+from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -50,11 +50,9 @@ class VisionSettings(BaseSettings):
         env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )
 
-    # 이 서비스 전용 키가 없으면 다른 서비스와 함께 쓰는 공용 키를 읽는다.
-    YOLO_GEMINI_API_KEY: SecretStr = Field(
-        default=SecretStr(""),
-        validation_alias=AliasChoices("YOLO_GEMINI_API_KEY", "MAP_PROJECT_GEMINI_API_KEY"),
-    )
+    YOLO_GEMINI_API_KEY: SecretStr = SecretStr("")
+    # 다른 서비스와 함께 쓰는 공용 키. 전용 키가 없거나 비어 있을 때만 쓴다.
+    MAP_PROJECT_GEMINI_API_KEY: SecretStr = SecretStr("")
     MAP_PROJECT_GEMINI_MODEL: str = "gemini-3.8-flash"
     YOLO_GEMINI_TIMEOUT_SECONDS: float = 25.0
     MAP_PROJECT_KAKAO_REST_API_KEY: str = ""
@@ -74,6 +72,17 @@ class VisionSettings(BaseSettings):
     YOLO_WIKIPEDIA_CONTACT: str = Field(default="", max_length=256)
 
     YOLO_LOG_LEVEL: str = "INFO"
+
+    @model_validator(mode="after")
+    def _use_shared_gemini_key_when_service_key_is_empty(self) -> "VisionSettings":
+        """전용 키가 빈 값으로 들어와도 공용 키로 넘어가게 한다.
+
+        예시 설정처럼 `YOLO_GEMINI_API_KEY=` 줄이 빈 값으로 있으면, 이름 대체만으로는
+        빈 값이 그대로 남아 공용 키가 있어도 부팅을 거절한다.
+        """
+        if not self.YOLO_GEMINI_API_KEY.get_secret_value():
+            self.YOLO_GEMINI_API_KEY = self.MAP_PROJECT_GEMINI_API_KEY
+        return self
 
 
 _settings: VisionSettings | None = None

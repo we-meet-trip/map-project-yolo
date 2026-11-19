@@ -29,6 +29,26 @@ def test_shared_key_is_used_when_service_key_is_absent(monkeypatch):
     assert _fresh().YOLO_GEMINI_API_KEY.get_secret_value() == "shared-key"
 
 
+def test_shared_key_is_used_when_service_key_is_empty(monkeypatch):
+    """예시 설정처럼 전용 키가 빈 값으로 있어도 공용 키로 넘어간다."""
+    monkeypatch.setenv("YOLO_GEMINI_API_KEY", "")
+    monkeypatch.setenv("MAP_PROJECT_GEMINI_API_KEY", "shared-key")
+
+    assert _fresh().YOLO_GEMINI_API_KEY.get_secret_value() == "shared-key"
+
+
+def test_shared_key_fallback_also_works_from_env_file(monkeypatch, tmp_path):
+    """.env 파일에 두 줄이 있고 전용 키가 빈 값일 때도 같다."""
+    from map_project_yolo.settings import VisionSettings
+
+    monkeypatch.delenv("YOLO_GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("MAP_PROJECT_GEMINI_API_KEY", raising=False)
+    env_file = tmp_path / ".env"
+    env_file.write_text("YOLO_GEMINI_API_KEY=\nMAP_PROJECT_GEMINI_API_KEY=file-shared-key\n", encoding="utf-8")
+
+    assert VisionSettings(_env_file=env_file).YOLO_GEMINI_API_KEY.get_secret_value() == "file-shared-key"
+
+
 @pytest.mark.parametrize("name,value,field", [
     ("YOLO_WS_MAX_JOBS", "7", "YOLO_WS_MAX_JOBS"),
     ("YOLO_JOB_TIMEOUT_SECONDS", "40.0", "YOLO_JOB_TIMEOUT_SECONDS"),
