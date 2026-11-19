@@ -16,6 +16,7 @@ class VisionSettings(BaseSettings):
     model_config:
       - env_file=".env": 작업 디렉토리의 .env 파일 자동 로드.
       - extra="ignore": 정의되지 않은 환경 변수는 무시.
+      - env_ignore_empty=True: 빈 값은 설정하지 않은 것으로 보고 기본값을 쓴다.
 
     Gemini 관련:
       YOLO_GEMINI_API_KEY: Gemini Vision 호출용 API 키. 비밀값(SecretStr).
@@ -46,8 +47,10 @@ class VisionSettings(BaseSettings):
         루트 핸들러가 비어 있을 때만 stdout 핸들러를 붙여 map_project_yolo.* 로그를 살린다.
     """
 
+    # 빈 값(`KEY=`)은 설정하지 않은 것으로 본다. 배포 구성이 값이 없는 변수를 빈 문자열로
+    # 넘겨도 숫자·주소 설정이 기본값으로 돌아가 부팅이 깨지지 않는다.
     model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", extra="ignore"
+        env_file=".env", env_file_encoding="utf-8", extra="ignore", env_ignore_empty=True
     )
 
     YOLO_GEMINI_API_KEY: SecretStr = SecretStr("")

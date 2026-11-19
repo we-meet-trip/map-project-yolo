@@ -73,3 +73,37 @@ def test_unprefixed_names_are_not_read(monkeypatch, old_name, field):
     monkeypatch.setenv(old_name, "ignored-value" if isinstance(default, str) else "999")
 
     assert getattr(_fresh(), field) == default
+
+
+@pytest.mark.parametrize("name,field", [
+    ("YOLO_WS_MAX_JOBS", "YOLO_WS_MAX_JOBS"),
+    ("YOLO_JOB_TIMEOUT_SECONDS", "YOLO_JOB_TIMEOUT_SECONDS"),
+    ("YOLO_MAX_CONCURRENT_JOBS", "YOLO_MAX_CONCURRENT_JOBS"),
+    ("YOLO_USER_SERVICE_BASE_URL", "YOLO_USER_SERVICE_BASE_URL"),
+    ("MAP_PROJECT_GEMINI_MODEL", "MAP_PROJECT_GEMINI_MODEL"),
+    ("YOLO_LOG_LEVEL", "YOLO_LOG_LEVEL"),
+])
+def test_empty_value_falls_back_to_default(monkeypatch, name, field):
+    """배포 구성이 빈 문자열을 넘겨도 부팅이 깨지지 않고 기본값을 쓴다."""
+    from map_project_yolo.settings import VisionSettings
+
+    monkeypatch.delenv(name, raising=False)
+    default = getattr(_fresh(), field)
+    monkeypatch.setenv(name, "")
+
+    assert getattr(_fresh(), field) == default
+    assert VisionSettings.model_fields[field].default == default
+
+
+def test_empty_values_in_env_file_fall_back_to_defaults(monkeypatch, tmp_path):
+    """.env 파일의 빈 줄도 같다."""
+    from map_project_yolo.settings import VisionSettings
+
+    monkeypatch.delenv("YOLO_WS_MAX_JOBS", raising=False)
+    monkeypatch.delenv("YOLO_PERMIT_TIMEOUT_SECONDS", raising=False)
+    env_file = tmp_path / ".env"
+    env_file.write_text("YOLO_WS_MAX_JOBS=\nYOLO_PERMIT_TIMEOUT_SECONDS=\n", encoding="utf-8")
+
+    loaded = VisionSettings(_env_file=env_file)
+    assert loaded.YOLO_WS_MAX_JOBS == 60
+    assert loaded.YOLO_PERMIT_TIMEOUT_SECONDS == 5.0
