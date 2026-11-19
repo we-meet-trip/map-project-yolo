@@ -7,7 +7,6 @@ import httpx
 
 _KAKAO_KEYWORD_URL = "https://dapi.kakao.com/v2/local/search/keyword.json"
 _KAKAO_COORD2ADDRESS_URL = "https://dapi.kakao.com/v2/local/geo/coord2address.json"
-_KAKAO_COORD2REGIONCODE_URL = "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json"
 
 
 async def kakao_reverse_geocode(lat: float, lng: float, api_key: str) -> str:
